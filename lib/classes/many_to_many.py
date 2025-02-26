@@ -34,19 +34,28 @@ class Article:
         
 class Author:
     def __init__(self, name):
-        self.name = name
+        self._name = name
+        self._articles = []
+
+    @property
+    def name(self):
+        return self._name    
 
     def articles(self):
-        pass
+        return self._articles
 
     def magazines(self):
-        pass
+        return list(set(article.magazine for article in self._articles))
 
     def add_article(self, magazine, title):
-        pass
+        article = Article(self, magazine, title)
+        self._articles.append(article)
+        magazine._articles.append(article)
+        return article
 
     def topic_areas(self):
-        pass
+        categories = list(set(magazine.category for magazine in self.magazines()))
+        return categories if categories else None
 
 class Magazine:
     def __init__(self, name, category):
