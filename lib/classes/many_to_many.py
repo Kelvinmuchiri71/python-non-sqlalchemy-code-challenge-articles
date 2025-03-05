@@ -96,9 +96,9 @@ class Magazine:
 
     def __init__(self, name, category):
         if not isinstance(name, str) or not (2 <= len(name) <= 16):
-            raise ValueError("Name must be a string between 2 and 16 characters")
+            raise ValueError("Magazine name must be a string between 2 and 16 characters.")
         if not isinstance(category, str) or len(category) == 0:
-            raise ValueError("Category must be a non-empty string")
+            raise ValueError("Magazine category must be a non-empty string.")
 
         self._name = name
         self._category = category
@@ -114,7 +114,7 @@ class Magazine:
         if isinstance(new_name, str) and 2 <= len(new_name) <= 16:
             self._name = new_name
         else:
-            raise Exception("Name must be a string between 2 and 16 characters")
+            raise ValueError("Magazine name must be a string between 2 and 16 characters.")
 
     @property
     def category(self):
@@ -125,7 +125,7 @@ class Magazine:
         if isinstance(new_category, str) and len(new_category) > 0:
             self._category = new_category
         else:
-            raise Exception("Category must be a non-empty string")
+            raise ValueError("Magazine category must be a non-empty string.")
    
     def articles(self):
     #Returns all articles published in this magazine
