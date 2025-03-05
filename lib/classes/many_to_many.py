@@ -4,11 +4,10 @@ class Article:
     def __init__(self, author, magazine, title):
         self._author = author
         self._magazine = magazine
-        self._title = title
+        self._title = title          #Uses the property setter to enforce validation
         Article.all.append(self)
 
         #Ensures articles are added to author and magazine lists
-
         author._articles.append(self)
         magazine._articles.append(self)
 
@@ -52,39 +51,41 @@ class Author:
     all_authors = []
 
     def __init__(self, name):
+        if not isinstance(name, str) or len(name) == 0:
+            raise Value Error("Name must be a non-empty string")
+
+        if hasattr(self, "_name"):
+            raise Exception("Can't reassign the name")
+            
         self._name = name
         self._articles = []                #Ensures articles are tracked at instance level
+        Author.all_authors.append(self)
 
     @property
     def name(self):
         return self._name  
 
     @name.setter
-    def name(self, name):
-        if hasattr(self, "_name"):
-            raise Exception("Can't reassign the name")
-        elif isinstance(name, str) and len(name) > 0:
-            self._name = name
+    def name(self, _):
+        raise Exception("Can't reassign the name")
  
     def articles(self):
     #Returns a list of articles written by the author
-
         return self._articles             # Returns tracked articles
 
     def magazines(self):
     #Returns a unique list of magazines the author has written for
-
         return list(set(article.magazine for article in self._articles))
 
     def add_article(self, magazine, title):
     #Creates and returns a new article, ensuring proper tracking
-
         article = Article(self, magazine, title)
         return article
 
-    #def topic_areas(self):
-    #    categories = list(set(magazine.category for magazine in self.magazines()))
-    #    return categories if categories else None
+    def topic_areas(self):
+    #Returns a list of magazine categories the author has written for
+        categories = list(set(magazine.category for magazine in self.magazines()))
+        return categories if categories else None
 
 
 class Magazine:
@@ -93,7 +94,8 @@ class Magazine:
     def __init__(self, name, category):
         self._name = name
         self._category = category
-        self._articles = []                  #Ensures articles are tracked per magazine
+        self._articles = []                  #Tracks articles per magazine
+        Magazine.all_magazines.append(self)
 
     @property
     def name(self):
@@ -119,24 +121,20 @@ class Magazine:
    
     def articles(self):
     #Returns all articles published in this magazine
-
         return self._articles
 
     def authors(self):
     #Returns unique authors who have written for the magazine
-
         return list(set(article.author for article in self._articles))
 
     def article_titles(self):
     #Returns a list of article titles, or None if no articles exist
-
         return [article.title for article in self._articles] if self._articles else None
 
     def contributing_authors(self):
     #Returns a list of authors who have written more than two articles
-    
         author_counts = {}
         for article in self._articles:
             author_counts[article.author] = author_counts.get(article.author, 0) + 1
-        contributors = [author for author, count in author_counts.items() if count > 2]
+        contributors = [author for author, count in author_counts.items() if count >= 2]
         return contributors if contributors else None
